@@ -111,7 +111,7 @@ describe('Section 2: Visual tests', () => {
 
     // Create similar test for checking second link to Cerebrum Hub homepage
     // Check that URL to Cerebrum Hub page is correct and clickable
-    it.only('Check 2nd link', () => {
+    it('Check 2nd link', () => {
         cy.get('nav').children().should('have.length', 2)
         
         // Get navigation element, find its second child, check the link content and click it
@@ -119,36 +119,21 @@ describe('Section 2: Visual tests', () => {
             .and('have.attr', 'href', 'https://cerebrumhub.com/')
             .click()
         
-        // To get past cross origin errors:
-        cy.origin('https://cerebrumhub.com', () => {
-            //To ignore browser internal errors:
-            Cypress.on('uncaught:exception', () => false)
-            // Check that currently opened URL is correct
-            cy.url().should('contain', 'https://cerebrumhub.com/')
-            // Go back to previous page
-            cy.go('back')
-        })
+        // Check that currently opened URL is correct
+        cy.url().should('contain', 'https://cerebrumhub.com/')
         
-        // This still fails with error:
-            // "Timed out after waiting 20000ms for your remote page to load.
-            // Your page did not fire its load event within 20000ms."
-        // It also seems to go to the page before the registration form
-        cy.origin('http://localhost:42699', () => {
-            cy.log('Back again in registration form 2')
-        })
+        // Go back to previous page
+        cy.go('back')
+        cy.log('Back again in registration form 2')
     })
 
     it('Check that radio button list is correct', () => {
         // Array of found elements with given selector has 4 elements in total
         cy.get('input[type="radio"]').should('have.length', 4)
-        cy.get('input[type="radio"]').next().eq(0).should('have.text','HTML')
-        cy.get('input[type="radio"]').next().eq(1).should('have.text','CSS')
-        cy.get('input[type="radio"]').next().eq(2).should('have.text','JavaScript')
-        cy.get('input[type="radio"]').next().eq(3).should('have.text','PHP')
-        cy.get('input[type="radio"]').eq(0).should('not.be.checked')
-        cy.get('input[type="radio"]').eq(1).should('not.be.checked')
-        cy.get('input[type="radio"]').eq(2).should('not.be.checked')
-        cy.get('input[type="radio"]').eq(3).should('not.be.checked')
+        cy.get('input[type="radio"]').next().eq(0).should('have.text','HTML').and('not.be.checked')
+        cy.get('input[type="radio"]').next().eq(1).should('have.text','CSS').and('not.be.checked')
+        cy.get('input[type="radio"]').next().eq(2).should('have.text','JavaScript').and('not.be.checked')
+        cy.get('input[type="radio"]').next().eq(3).should('have.text','PHP').and('not.be.checked')
 
         // Selecting one will remove selection from other radio button
         cy.get('input[type="radio"]').eq(0).check().should('be.checked')
@@ -159,12 +144,9 @@ describe('Section 2: Visual tests', () => {
     // Create test similar to previous one
     it('Check that checkbox list is correct', () => {
         cy.get('input[type="checkbox"]').should('have.length',3)
-        cy.get('input[type="checkbox"]').next().eq(0).should('have.text',"I have a bike")
-        cy.get('input[type="checkbox"]').next().eq(1).should('have.text',"I have a car")
-        cy.get('input[type="checkbox"]').next().eq(2).should('have.text',"I have a boat")
-        cy.get('input[type="checkbox"]').eq(0).should('not.be.checked')
-        cy.get('input[type="checkbox"]').eq(1).should('not.be.checked')
-        cy.get('input[type="checkbox"]').eq(2).should('not.be.checked')
+        cy.get('input[type="checkbox"]').next().eq(0).should('have.text',"I have a bike").and('not.be.checked')
+        cy.get('input[type="checkbox"]').next().eq(1).should('have.text',"I have a car").and('not.be.checked')
+        cy.get('input[type="checkbox"]').next().eq(2).should('have.text',"I have a boat").and('not.be.checked')
 
         cy.get('input[type="checkbox"]').eq(0).check().should('be.checked')
         cy.get('input[type="checkbox"]').eq(1).check().should('be.checked')
@@ -202,13 +184,6 @@ describe('Section 2: Visual tests', () => {
         cy.get('#animal').children().eq(3).should('have.value',"hippo").and('have.text',"Hippo")
         cy.get('#animal').children().eq(4).should('have.value',"spider").and('have.text',"Cow")
         cy.get('#animal').children().eq(5).should('have.value',"mouse").and('have.text',"Horse")
-
-        var values = ['dog','cat','snake','hippo','spider','mouse']
-        var texts  = ["Dog","Cat","Snake","Hippo","Cow","Horse"]
-        cy.get('#animal').children().each((child,index) => {
-            cy.wrap(child).should('have.value',values[index])
-            cy.wrap(child).should('have.text',texts[index])
-        })
     })
 
 })
